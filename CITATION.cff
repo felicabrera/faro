@@ -1,0 +1,28 @@
+cff-version: 1.2.0
+title: "FARO: A Public Append-Only Transparency Log for Verifiable Voting"
+message: "If you reference this software, please cite it as below."
+type: software
+authors:
+  - given-names: Felipe
+    family-names: Cabrera
+    affiliation: Universidad Católica del Uruguay
+  - given-names: Stefano
+    family-names: Francolino
+    affiliation: Universidad Católica del Uruguay
+  - given-names: Lucía
+    family-names: Vázquez
+    affiliation: Universidad Católica del Uruguay
+repository-code: "https://github.com/felicabrera/faro"
+license: AGPL-3.0-or-later
+version: "0.1.0"
+keywords:
+  - transparency log
+  - append-only log
+  - Merkle tree
+  - certificate transparency
+  - inclusion proof
+  - consistency proof
+  - tlog-tiles
+  - Tessera
+  - verifiable voting
+  - Uruguay

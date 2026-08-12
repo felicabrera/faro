@@ -1,0 +1,139 @@
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --fg: #16181d;
+  --muted: #5c6370;
+  --border: #e2e5ea;
+  --accent: #0b5fff;
+  --warn-bg: #fff8e6;
+  --warn-border: #e6c65c;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --fg: #e6e8ec;
+    --muted: #9aa2af;
+    --border: #262a33;
+    --accent: #6ea0ff;
+    --warn-bg: #2a2314;
+    --warn-border: #6b5a20;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  line-height: 1.6;
+}
+
+main {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 4rem;
+}
+
+.site-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 0;
+}
+
+.wordmark {
+  font-weight: 700;
+  font-size: 1.35rem;
+  letter-spacing: 0.06em;
+  color: var(--fg);
+  text-decoration: none;
+}
+
+.tagline {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+.site-footer {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 3rem;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+h1 {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
+}
+
+h2 {
+  font-size: 1.1rem;
+  margin-top: 2.5rem;
+}
+
+.lede {
+  color: var(--muted);
+  margin-top: 0;
+}
+
+.field-grid {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.5rem 1.25rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 1rem 1.25rem;
+}
+
+.field-grid dt {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.field-grid dd {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.notice {
+  background: var(--warn-bg);
+  border: 1px solid var(--warn-border);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  font-size: 0.9rem;
+}
+
+.notice strong {
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+code {
+  font-family: var(--mono);
+  font-size: 0.85em;
+}
+
+pre {
+  background: var(--warn-bg);
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  overflow-x: auto;
+  font-size: 0.8rem;
+}
+
+a {
+  color: var(--accent);
+}

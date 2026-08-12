@@ -35,7 +35,7 @@ jobs:
         if: steps.detect.outputs.has_web == 'true'
         uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: '20'
+          node-version: '22'
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
 
@@ -53,6 +53,15 @@ jobs:
         if: steps.detect.outputs.has_web == 'true'
         working-directory: ./web
         run: npm run build
+
+      # Type checking runs after the build, not before it. Next generates
+      # `next-env.d.ts` during the build and that file is gitignored, so a
+      # `tsc --noEmit` on a fresh checkout would type-check against a source tree
+      # the build has not finished preparing.
+      - name: Type check
+        if: steps.detect.outputs.has_web == 'true'
+        working-directory: ./web
+        run: npm run typecheck
 
       - name: npm audit (dependency vulnerabilities)
         if: steps.detect.outputs.has_web == 'true'
