@@ -82,9 +82,15 @@ export default function Home() {
 
       <h2>Verificar por tu cuenta</h2>
       <p>
-        No hace falta confiar en esta página. El log expone la API de lectura{' '}
-        <a href="https://c2sp.org/tlog-tiles">tlog-tiles</a> como archivos estáticos, y la
-        CLI <code>faro-verify</code> comprueba lo mismo desde tu propia máquina.
+        El log expone su API de lectura{' '}
+        <a href="https://c2sp.org/tlog-tiles">tlog-tiles</a> como archivos estáticos, en un
+        formato estándar y documentado. Cualquiera puede descargarlos, espejarlos y
+        comprobarlos con herramientas escritas por terceros, sin pedirnos permiso y sin
+        pasar por esta página.
+      </p>
+      <p>
+        La CLI <code>faro-verify</code> todavía <strong>no</strong> implementa los
+        subcomandos de verificación. Cuando existan, se documentan acá.
       </p>
     </>
   )

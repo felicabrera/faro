@@ -72,10 +72,22 @@ func run() error {
 		"storage", cfg.StorageDir,
 		"build", version.Read().String())
 
+	// Say this on every start, not just in the README. `POST /add` accepts
+	// entries from anyone who can reach the port, so the log is only as
+	// append-controlled as the network in front of it. Authentication arrives
+	// with the ÁGORA integration; until then this must not be publicly routable.
+	logger.Warn("POST /add is unauthenticated: anyone who can reach this port can append to the log; " +
+		"do not expose it outside a trusted network until write authentication lands")
+
 	srv := &http.Server{
-		Addr:              cfg.Addr,
-		Handler:           routes(cfg, lg, logger),
+		Addr:    cfg.Addr,
+		Handler: routes(cfg, lg, logger),
+		// ReadHeaderTimeout alone only bounds the headers. Without ReadTimeout a
+		// client can dribble a request body indefinitely and hold the connection.
 		ReadHeaderTimeout: cfg.ReadHeaderTimeout,
+		ReadTimeout:       cfg.ReadTimeout,
+		WriteTimeout:      cfg.WriteTimeout,
+		IdleTimeout:       cfg.IdleTimeout,
 	}
 
 	errCh := make(chan error, 1)
@@ -94,12 +106,24 @@ func run() error {
 		logger.Info("shutting down")
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), cfg.ShutdownTimeout)
 		defer cancel()
-		if err := srv.Shutdown(shutdownCtx); err != nil {
-			return fmt.Errorf("shutting down the server: %w", err)
+
+		// The appender is flushed even when HTTP shutdown fails or times out.
+		// Returning early on a shutdown error would abandon entries that were
+		// accepted, acknowledged with an index, and never written: a voter would
+		// hold a receipt for a ballot that is not in the log. Draining the
+		// listener first is still preferred, so nothing is accepted and dropped.
+		shutdownErr := srv.Shutdown(shutdownCtx)
+		if shutdownErr != nil {
+			logger.Error("graceful shutdown did not complete; flushing the log anyway",
+				"error", shutdownErr)
 		}
-		// Flush pending entries only after the listener is closed, so nothing is
-		// accepted and then dropped.
-		return lg.Close(shutdownCtx)
+		if err := lg.Close(shutdownCtx); err != nil {
+			return err
+		}
+		if shutdownErr != nil {
+			return fmt.Errorf("shutting down the server: %w", shutdownErr)
+		}
+		return nil
 	}
 }
 

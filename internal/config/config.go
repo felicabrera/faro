@@ -7,6 +7,7 @@
 package config
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"strconv"
@@ -31,6 +32,13 @@ type Config struct {
 	BatchMaxSize uint
 	// ReadHeaderTimeout bounds how long a client may take to send its headers.
 	ReadHeaderTimeout time.Duration
+	// ReadTimeout bounds the whole request, headers and body. ReadHeaderTimeout
+	// alone leaves a client free to dribble a body indefinitely.
+	ReadTimeout time.Duration
+	// WriteTimeout bounds how long a response may take to write.
+	WriteTimeout time.Duration
+	// IdleTimeout bounds how long a keep-alive connection may sit unused.
+	IdleTimeout time.Duration
 	// ShutdownTimeout bounds graceful shutdown.
 	ShutdownTimeout time.Duration
 	// CORSOrigin is the single origin allowed to read the log from a browser,
@@ -41,18 +49,44 @@ type Config struct {
 }
 
 // Load reads the configuration from the environment and applies defaults.
+//
+// A malformed value is an error, not a fallback. Silently substituting the
+// default for an unparseable checkpoint interval means an operator who typed
+// `30` instead of `30s` gets a log that looks configured and is not.
 func Load() (*Config, error) {
+	var errs []error
+	dur := func(key string, def time.Duration) time.Duration {
+		d, err := envDuration(key, def)
+		if err != nil {
+			errs = append(errs, err)
+		}
+		return d
+	}
+	num := func(key string, def uint) uint {
+		n, err := envUint(key, def)
+		if err != nil {
+			errs = append(errs, err)
+		}
+		return n
+	}
+
 	c := &Config{
 		Addr:               env("FARO_ADDR", ":2025"),
 		StorageDir:         env("FARO_STORAGE_DIR", "./data/log"),
 		SigningKey:         os.Getenv("FARO_SIGNING_KEY"),
-		CheckpointInterval: envDuration("FARO_CHECKPOINT_INTERVAL", 10*time.Second),
-		BatchMaxAge:        envDuration("FARO_BATCH_MAX_AGE", time.Second),
-		BatchMaxSize:       envUint("FARO_BATCH_MAX_SIZE", 256),
-		ReadHeaderTimeout:  envDuration("FARO_READ_HEADER_TIMEOUT", 10*time.Second),
-		ShutdownTimeout:    envDuration("FARO_SHUTDOWN_TIMEOUT", 15*time.Second),
+		CheckpointInterval: dur("FARO_CHECKPOINT_INTERVAL", 10*time.Second),
+		BatchMaxAge:        dur("FARO_BATCH_MAX_AGE", time.Second),
+		BatchMaxSize:       num("FARO_BATCH_MAX_SIZE", 256),
+		ReadHeaderTimeout:  dur("FARO_READ_HEADER_TIMEOUT", 10*time.Second),
+		ReadTimeout:        dur("FARO_READ_TIMEOUT", 30*time.Second),
+		WriteTimeout:       dur("FARO_WRITE_TIMEOUT", 60*time.Second),
+		IdleTimeout:        dur("FARO_IDLE_TIMEOUT", 120*time.Second),
+		ShutdownTimeout:    dur("FARO_SHUTDOWN_TIMEOUT", 15*time.Second),
 		CORSOrigin:         os.Getenv("FARO_CORS_ORIGIN"),
 		LogLevel:           env("FARO_LOG_LEVEL", "info"),
+	}
+	if len(errs) > 0 {
+		return nil, errors.Join(errs...)
 	}
 	if err := c.validate(); err != nil {
 		return nil, err
@@ -85,26 +119,32 @@ func env(key, def string) string {
 	return def
 }
 
-func envDuration(key string, def time.Duration) time.Duration {
+// envDuration parses a duration, rejecting anything malformed or non-positive.
+// A zero or negative timeout disables the protection it was meant to provide, so
+// it is refused rather than applied.
+func envDuration(key string, def time.Duration) (time.Duration, error) {
 	v := os.Getenv(key)
 	if v == "" {
-		return def
+		return def, nil
 	}
 	d, err := time.ParseDuration(v)
 	if err != nil {
-		return def
+		return def, fmt.Errorf("config: %s=%q is not a duration (want a form like 10s or 1m): %w", key, v, err)
 	}
-	return d
+	if d <= 0 {
+		return def, fmt.Errorf("config: %s=%q must be positive; a non-positive value disables the limit", key, v)
+	}
+	return d, nil
 }
 
-func envUint(key string, def uint) uint {
+func envUint(key string, def uint) (uint, error) {
 	v := os.Getenv(key)
 	if v == "" {
-		return def
+		return def, nil
 	}
 	n, err := strconv.ParseUint(v, 10, 32)
 	if err != nil {
-		return def
+		return def, fmt.Errorf("config: %s=%q is not a non-negative integer: %w", key, v, err)
 	}
-	return uint(n)
+	return uint(n), nil
 }

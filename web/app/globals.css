@@ -7,7 +7,7 @@
   --accent: #0b5fff;
   --warn-bg: #fff8e6;
   --warn-border: #e6c65c;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --mono: ui-monospace, "SFMono-Regular", "Menlo", "Consolas", monospace;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -30,7 +30,7 @@ body {
   margin: 0;
   background: var(--bg);
   color: var(--fg);
-  font-family: system-ui, -apple-system, 'Segoe UI', sans-serif;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
   line-height: 1.6;
 }
 
