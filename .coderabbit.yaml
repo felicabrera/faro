@@ -1,0 +1,37 @@
+language: "es"
+early_access: false
+reviews:
+  profile: "assertive"
+  request_changes_workflow: true
+  high_level_summary: true
+  poem: false
+  auto_review:
+    enabled: true
+    drafts: false
+  path_instructions:
+    - path: "internal/**"
+      instructions: >
+        Este es el núcleo del log público de auditoría FARO: append-only,
+        basado en árboles de Merkle, construido sobre Tessera. Señalá
+        cualquier cosa que pueda romper las garantías de append-only,
+        permitir modificación retroactiva de entradas ya publicadas, o
+        debilitar la verificación de pruebas de inclusión y de consistencia.
+        Prestá atención especial al manejo de checkpoints y signed tree
+        heads, a la correctitud del cálculo de hashes del árbol, y a
+        condiciones de carrera en la secuenciación de entradas. Tratá
+        cualquier cambio acá como de alto riesgo.
+    - path: "cmd/**"
+      instructions: >
+        Puntos de entrada y CLI de FARO. Verificá validación de entrada,
+        manejo de errores que no oculte fallas de verificación, y que
+        ninguna ruta de código permita publicar un checkpoint sin firmar o
+        aceptar una prueba inválida como válida.
+    - path: ".github/**"
+      instructions: >
+        Configuración de CI/CD y gobernanza. Señalá permisos de workflow más
+        amplios de lo necesario, uso de referencias mutables en acciones de
+        terceros (tags móviles o `@master` en lugar de un tag fijo o un SHA),
+        y cualquier exposición de secretos en logs o en workflows que corran
+        sobre PRs de forks.
+chat:
+  auto_reply: true

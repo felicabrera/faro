@@ -1,27 +1,35 @@
 name: Next.js CI
 
+# Mismo criterio que go-ci.yml: sin filtros `paths:`, el job siempre corre y
+# detecta internamente si existe una app Next.js en `web/`. Si no existe,
+# reporta éxito sin ejecutar nada.
 on:
   pull_request:
     branches: [develop, main]
-    paths:
-      - 'web/**'
-      - 'package.json'
-      - 'package-lock.json'
   push:
     branches: [develop, main]
-    paths:
-      - 'web/**'
+
+permissions:
+  contents: read
 
 jobs:
   lint-build-test:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ./web
     steps:
       - uses: actions/checkout@v4
 
+      - name: Detectar app Next.js
+        id: detect
+        run: |
+          if [ -f web/package.json ]; then
+            echo "has_web=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_web=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::No se encontró web/package.json; el job reporta éxito sin ejecutar análisis."
+          fi
+
       - name: Setup Node
+        if: steps.detect.outputs.has_web == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: '20'
@@ -29,13 +37,21 @@ jobs:
           cache-dependency-path: web/package-lock.json
 
       - name: Install
+        if: steps.detect.outputs.has_web == 'true'
+        working-directory: ./web
         run: npm ci
 
       - name: Lint
+        if: steps.detect.outputs.has_web == 'true'
+        working-directory: ./web
         run: npm run lint
 
       - name: Build
+        if: steps.detect.outputs.has_web == 'true'
+        working-directory: ./web
         run: npm run build
 
       - name: npm audit (vulnerabilidades de dependencias)
+        if: steps.detect.outputs.has_web == 'true'
+        working-directory: ./web
         run: npm audit --audit-level=high
