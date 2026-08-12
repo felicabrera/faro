@@ -33,6 +33,9 @@ arreglo disponible.
 - Verificación de pruebas de inclusión y de consistencia.
 - Firma y verificación de checkpoints / signed tree heads.
 - Autenticación, autorización y manejo de tokens de la API de FARO.
+- Sitio web público de auditoría y CLI de verificación: cualquier caso en que
+  una prueba se muestre como válida sin haberse verificado realmente, o en que
+  un fallo de verificación se presente de forma indistinguible de un éxito.
 - Configuración de infraestructura y de CI/CD que pueda afectar la integridad
   de los artefactos publicados.
 
@@ -81,8 +84,11 @@ opening a public issue.
 **In scope:** append-only guarantees and resistance to retroactive
 modification, Merkle tree construction, inclusion and consistency proof
 verification, checkpoint / signed-tree-head signing, FARO API authentication
-and token handling, and infrastructure or CI/CD configuration affecting the
-integrity of published artifacts.
+and token handling, the public audit website and verification CLI (in
+particular any case where a proof is shown as valid without actually being
+verified, or where a verification failure is indistinguishable from success),
+and infrastructure or CI/CD configuration affecting the integrity of published
+artifacts.
 
 **Out of scope:** third-party dependency issues with no demonstrated exploit
 path in this project, volumetric denial of service, unanalyzed automated

@@ -40,6 +40,16 @@ reviews:
         does not hide verification failures, and that no code path allows
         publishing an unsigned checkpoint or accepting an invalid proof as
         valid.
+    - path: "web/**"
+      instructions: >
+        This is the public audit frontend for FARO, where anyone can verify
+        inclusion and consistency proofs for themselves. Flag any place where a
+        proof is displayed as valid without actually being verified client
+        side, where verification failures are swallowed or rendered
+        indistinguishably from success, or where log responses are trusted
+        rather than checked. A convincing but unverified "verified" badge is
+        worse than showing nothing, because the whole point of this interface
+        is that users do not have to trust us.
     - path: ".github/**"
       instructions: >
         CI/CD and governance configuration. Flag workflow permissions broader
