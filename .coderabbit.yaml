@@ -50,6 +50,16 @@ reviews:
         rather than checked. A convincing but unverified "verified" badge is
         worse than showing nothing, because the whole point of this interface
         is that users do not have to trust us.
+    - path: "web/lib/**"
+      instructions: >
+        Verification logic for the public audit explorer, running in the
+        visitor's browser. This is where a display bug becomes a security bug.
+        Flag any path that reports a proof or a signature as valid without
+        having actually recomputed and compared it, any use of a value returned
+        by the log as if it were verified, and any failure mode that renders
+        indistinguishably from success. A convincing but unverified "verified"
+        badge is worse than showing nothing. Parsing and verification must stay
+        clearly separated, and anything not yet verified must say so.
     - path: ".github/**"
       instructions: >
         CI/CD and governance configuration. Flag workflow permissions broader
