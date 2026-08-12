@@ -20,6 +20,10 @@
 /internal/              @felicabrera @Stefano936 @Luciavazquez01
 /cmd/                   @felicabrera @Stefano936 @Luciavazquez01
 
+# Public audit website and verification CLI. This is where a user decides
+# whether to trust a proof, so a display bug here is a security bug.
+/web/                   @felicabrera @Stefano936 @Luciavazquez01
+
 # Security, CI/CD and repository governance configuration.
 /.github/               @felicabrera @Stefano936 @Luciavazquez01
 /SECURITY.md            @felicabrera @Stefano936 @Luciavazquez01
