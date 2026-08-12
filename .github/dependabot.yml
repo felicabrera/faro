@@ -1,13 +1,12 @@
-# Dependabot — actualizaciones de versión.
+# Dependabot version updates.
 #
-# Las actualizaciones *de seguridad* no se configuran acá: ya están habilitadas
-# a nivel de repositorio (Dependabot alerts + automated security fixes) y se
-# disparan solas cuando aparece un advisory que afecta al proyecto.
+# Security updates are not configured here. They are already enabled at
+# repository level (Dependabot alerts plus automated security fixes) and fire on
+# their own whenever an advisory affects the project.
 #
-# Hoy el repositorio solo contiene workflows de GitHub Actions, así que ese es
-# el único ecosistema activo. Declarar `gomod` sin un `go.mod` presente hace
-# que Dependabot falle en cada corrida. Descomentar el bloque correspondiente
-# cuando el código aterrice.
+# Today the repository only contains GitHub Actions workflows, so that is the
+# only active ecosystem. Declaring `gomod` without a `go.mod` present makes
+# Dependabot fail on every run. Uncomment the block below once the code lands.
 version: 2
 updates:
   - package-ecosystem: "github-actions"
