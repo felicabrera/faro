@@ -4,7 +4,11 @@
 # two in step: a local run that passes against a different version than CI is
 # worse than no local run.
 BINDIR          := bin
-PKG             := ./...
+# Go's ./... pattern descends into web/node_modules, where some npm packages
+# (flatted) ship stray .go files. Those are third-party and must not be built,
+# tested or linted as if they were ours, so the Go trees are listed explicitly.
+# Add any new top-level Go directory here.
+PKG             := ./cmd/... ./internal/...
 GOLANGCI_LINT   := github.com/golangci/golangci-lint/v2/cmd/golangci-lint@v2.12.2
 
 .PHONY: all build test test-race vet lint fmt tidy cover clean help \

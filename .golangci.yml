@@ -65,6 +65,11 @@ linters:
         - G115
 
   exclusions:
+    paths:
+      # The audit explorer's npm tree. Some packages there ship stray .go files
+      # (flatted), and linting a dependency's vendored sample code produces
+      # findings nobody can act on.
+      - web/node_modules
     rules:
       # Test files may use weak randomness and skip error wrapping; they are not
       # part of the attack surface and the noise drowns real findings.
