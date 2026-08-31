@@ -7,7 +7,7 @@
 # Next.js app and is deployed separately, behind a CDN; keeping them apart means
 # a compromise of the public website cannot reach the log's signing key.
 
-FROM golang:1.26-bookworm AS build
+FROM golang:1.27-bookworm AS build
 WORKDIR /src
 
 COPY go.mod go.sum ./
