@@ -144,7 +144,9 @@ divulgación coordinada descrito allí y no un issue público.
 
 ## Licencia
 
-GNU AGPL-3.0 — ver [`LICENSE`](LICENSE).
+Source-available, solo auditoría, uso no comercial — ver [`LICENSE`](LICENSE). El código es
+público para que cualquiera pueda leerlo, compilarlo y verificarlo; no está licenciado para
+reutilización, modificación ni uso comercial por terceros.
 
 ## Referencias
 

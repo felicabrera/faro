@@ -23,7 +23,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
         <footer className="site-footer">
           <p>
             Proyecto Final de Grado, Ingeniería en Informática, Universidad Católica del
-            Uruguay. Código bajo AGPL-3.0.
+            Uruguay. Código source-available, solo auditoría, uso no comercial.
           </p>
         </footer>
       </body>
