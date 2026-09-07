@@ -6,9 +6,9 @@ name: Next.js CI
 # pinned by commit SHA, with the readable tag kept as a comment.
 on:
   pull_request:
-    branches: [develop, main]
+    branches: [development, main]
   push:
-    branches: [develop, main]
+    branches: [development, main]
 
 permissions:
   contents: read
