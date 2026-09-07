@@ -155,7 +155,7 @@ func routes(cfg *config.Config, lg *farolog.Log, logger *slog.Logger) http.Handl
 		}
 	})
 
-	mux.HandleFunc("GET /healthz", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /health", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json; charset=utf-8")
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		if _, err := fmt.Fprintf(w, `{"status":"ok","origin":%q,"build":%q}`+"\n",

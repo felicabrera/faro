@@ -1,0 +1,55 @@
+# Runtime composition for faro-log and the audit explorer (web/).
+#
+# One file covers both the test and prod deployments: everything that
+# differs between them (image tags, container names, published ports,
+# signing key, CORS origin, the explorer's build-time API URL) comes from
+# the .env file the deploy workflow writes on the host. See
+# .github/workflows/deploy.yml and deploy/nginx/*.conf.
+services:
+  log:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${IMAGE_NAME_LOG:-faro-log}:latest
+    container_name: ${CONTAINER_NAME_LOG:-faro-log}
+    restart: unless-stopped
+    stop_grace_period: 20s
+    # Loopback only: nginx on the host is the public entrypoint.
+    ports:
+      - "127.0.0.1:${HOST_PORT_LOG:-2025}:2025"
+    environment:
+      FARO_ADDR: ":2025"
+      FARO_STORAGE_DIR: /data
+      FARO_SIGNING_KEY: ${FARO_SIGNING_KEY}
+      FARO_CORS_ORIGIN: ${FARO_CORS_ORIGIN:-}
+    volumes:
+      - faro-log-data:/data
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_FARO_URL: ${NEXT_PUBLIC_FARO_URL:-http://localhost:2025}
+    image: ${IMAGE_NAME_WEB:-faro-web}:latest
+    container_name: ${CONTAINER_NAME_WEB:-faro-web}
+    restart: unless-stopped
+    stop_grace_period: 10s
+    ports:
+      - "127.0.0.1:${HOST_PORT_WEB:-8080}:8080"
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/cache/nginx
+      - /var/run
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+
+volumes:
+  faro-log-data:
