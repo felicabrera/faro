@@ -1,6 +1,6 @@
 module github.com/felicabrera/faro
 
-go 1.26.8
+go 1.26.9
 
 require (
 	github.com/transparency-dev/tessera v1.0.4
