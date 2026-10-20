@@ -4,7 +4,7 @@ go 1.26.9
 
 require (
 	github.com/transparency-dev/tessera v1.0.4
-	golang.org/x/mod v0.41.0
+	golang.org/x/mod v0.42.0
 )
 
 require (
