@@ -93,6 +93,8 @@ jobs:
 
       - name: gosec (static security analysis)
         if: steps.detect.outputs.has_go == 'true'
+        env:
+          GOTOOLCHAIN: auto
         uses: securego/gosec@deb54465fea23d19a77f037e11e6589021f8501d # v2.29.0
         with:
           args: './...'

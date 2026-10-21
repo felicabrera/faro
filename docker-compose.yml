@@ -14,9 +14,10 @@ services:
     container_name: ${CONTAINER_NAME_LOG:-faro-log}
     restart: unless-stopped
     stop_grace_period: 20s
-    # Loopback only: nginx on the host is the public entrypoint.
+    # Loopback by default; the deploy sets HOST_BIND to the apps host address so
+    # the nginx edge host can reach the container.
     ports:
-      - "127.0.0.1:${HOST_PORT_LOG:-2025}:2025"
+      - "${HOST_BIND:-127.0.0.1}:${HOST_PORT_LOG:-2025}:2025"
     environment:
       FARO_ADDR: ":2025"
       FARO_STORAGE_DIR: /data
@@ -40,7 +41,7 @@ services:
     restart: unless-stopped
     stop_grace_period: 10s
     ports:
-      - "127.0.0.1:${HOST_PORT_WEB:-8080}:8080"
+      - "${HOST_BIND:-127.0.0.1}:${HOST_PORT_WEB:-8080}:8080"
     read_only: true
     tmpfs:
       - /tmp
